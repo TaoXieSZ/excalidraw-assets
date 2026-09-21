@@ -8,7 +8,7 @@
 
 ![腾讯云图标预览](./tencent-cloud/assets/all-contact-sheet.png)
 
-- **[完整下载包（约 21 MB）](./tencent-cloud/output/tencent-cloud-handdrawn.zip)**
+- **[完整下载包（约 36 MB）](./tencent-cloud/output/tencent-cloud-handdrawn.zip)**
 - [使用说明与分类下载](./tencent-cloud/README.md)
 - [蓝色全量库](./tencent-cloud/output/all/tencent-cloud-all-blue.excalidrawlib) · [黑白全量库](./tencent-cloud/output/all/tencent-cloud-all-mono.excalidrawlib)
 - [预览页源文件](./tencent-cloud/output/index.html)：下载包解压后，用浏览器打开该文件，可搜索中文名称、英文别名和 COS/CVM 等缩写。

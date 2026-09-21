@@ -7,8 +7,8 @@
     "mono": 455
   },
   "native_elements": {
-    "blue": 68827,
-    "mono": 68827
+    "blue": 58789,
+    "mono": 58789
   },
   "category_entries": {
     "blue": 455,
@@ -22,7 +22,7 @@
   "browser_checks": [
     "COS/CVM alias search",
     "category selection",
-    "464 native elements rendered in Excalidraw"
+    "397 native elements rendered in Excalidraw"
   ],
   "limitation": "Full .excalidrawlib file import and full-library browser performance not tested"
 }

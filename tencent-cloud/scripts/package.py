@@ -8,7 +8,7 @@ paths+=list((ROOT/'output').rglob('*.excalidraw'))+list((ROOT/'output').rglob('*
 paths+=list((ROOT/'assets/all').glob('*.svg'))
 paths += [ROOT/'assets/all-contact-sheet.png',ROOT/'assets/all-excalidraw-validation.png',ROOT/'assets/preview.png']
 paths+=list((ROOT/'scripts').glob('*.py'))+list((ROOT/'scripts').glob('*.cjs'))
-paths += [ROOT/'data'/name for name in ['official-icons.zip','source-catalog.json','build-report.json','render-report.json','verification.json']]
+paths += [ROOT/'data'/name for name in ['official-icons.zip','source-catalog.json','build-report.json','render-report.json','verification.json','qa-sample.excalidraw']]
 with zipfile.ZipFile(TARGET,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
     for path in sorted(set(paths)):z.write(path,Path('tencent-cloud')/path.relative_to(ROOT))
 with zipfile.ZipFile(TARGET) as z:

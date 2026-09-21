@@ -9,6 +9,7 @@ import html
 import json
 import math
 import re
+import random
 from collections import defaultdict
 from pathlib import Path
 import zipfile
@@ -61,7 +62,11 @@ def hatches(mask):
     height,width=mask.shape
     step=round(width*5.5/SIZE)
     segments=[]
-    for total in range(0,width+height,step):
+    rng=random.Random(27)
+    totals=[]; total=0
+    while total<width+height:
+        totals.append(total); total+=max(6,round(step*rng.uniform(.8,1.5)))
+    for total in totals:
         points=[]
         for x in range(max(0,total-height+1),min(width,total+1)):
             y=total-x
@@ -82,17 +87,40 @@ def coverage(mask, contours):
     union=np.count_nonzero(restored|mask)
     return np.count_nonzero(restored&mask)/union if union else 1
 
+def sketch_points(points, hatch=False):
+    """Slight, repeatable pen drift in display pixels; never alters source data."""
+    a=np.asarray(points,dtype=float)*SIZE/512
+    # Subdivide long straight edges so pen drift can gently bow them.
+    sampled=[]
+    for first,last in zip(a[:-1],a[1:]):
+        count=max(1,int(np.linalg.norm(last-first)/7))
+        sampled.extend(first+(last-first)*i/count for i in range(count))
+    sampled.append(a[-1]);xy=np.asarray(sampled)
+    x,y=xy[:,0].copy(),xy[:,1].copy()
+    xy[:,0]+=.95*np.sin(y/21+x/53)+.32*np.sin(y/7)
+    xy[:,1]+=.9*np.sin(x/25-y/61)+.3*np.sin(x/8)
+    if hatch:
+        phase=float(a[0].sum())
+        t=np.linspace(0,1,len(xy))
+        xy[:,0]+=.8*np.sin(phase)*np.sin(t*math.pi)
+        xy[:,1]+=.6*np.cos(phase)*np.sin(t*math.pi)
+    return xy
+
+def pen_style(points,hatch):
+    phase=sum(points[0])*.17
+    return ((.7+.25*(1+math.sin(phase))/2, 55+int(15*(1+math.cos(phase))/2))
+            if hatch else (1.65,100))
+
 def native_line(points, ident, group, color, hatch=False):
-    xy=np.asarray(points)*SIZE/512
-    # Normalize each shape's local points; dimensions always bound its points.
-    lo=xy.min(axis=0); hi=xy.max(axis=0)
-    first=xy[0]
+    xy=sketch_points(points,hatch)
+    lo=xy.min(axis=0); hi=xy.max(axis=0);first=xy[0]
+    width,opacity=pen_style(points,hatch)
     return dict(id=ident,type='line',x=round(float(first[0]),3),y=round(float(first[1]),3),
         width=round(float(hi[0]-lo[0]),3),height=round(float(hi[1]-lo[1]),3),angle=0,
         strokeColor=color,backgroundColor='transparent',fillStyle='hachure',
-        strokeWidth=.8 if hatch else 1.35,strokeStyle='solid',roughness=.55,
-        opacity=70 if hatch else 100,groupIds=[group],frameId=None,roundness=None,
-        seed=int(hashlib.sha256(ident.encode()).hexdigest()[:7],16),version=1,versionNonce=1,
+        strokeWidth=width,strokeStyle='solid',roughness=1.15 if hatch else 1.4,
+        opacity=opacity,groupIds=[group],frameId=None,roundness=None,
+        seed=int(hashlib.sha256(ident.encode()).hexdigest()[:7],16),version=2,versionNonce=2,
         isDeleted=False,boundElements=None,updated=STAMP,link=None,locked=False,
         points=np.round(xy-first,3).tolist(),startBinding=None,endBinding=None,
         startArrowhead=None,endArrowhead=None,lastCommittedPoint=None)
@@ -125,10 +153,16 @@ def library(items):
 def preview_svg(contours, hatch_segments, name):
     out=['<svg xmlns="http://www.w3.org/2000/svg" width="240" height="272" viewBox="0 0 240 272">',
          '<g transform="translate(24 12)" fill="none" stroke-linecap="round" stroke-linejoin="round">']
-    for paths,color,width,opacity in [(hatch_segments,'#6c9dde',.8,.7),(contours,BLUE,1.35,1)]:
+    for paths,color,is_hatch in [(hatch_segments,'#6c9dde',True),(contours,BLUE,False)]:
         for p in paths:
-            points=' '.join(f'{x*SIZE/512:.3f},{y*SIZE/512:.3f}' for x,y in p)
-            out.append(f'<polyline points="{points}" stroke="{color}" stroke-width="{width}" opacity="{opacity}"/>')
+            xy=sketch_points(p,is_hatch);width,opacity=pen_style(p,is_hatch)
+            points=' '.join(f'{x:.3f},{y:.3f}' for x,y in xy)
+            out.append(f'<polyline points="{points}" stroke="{color}" stroke-width="{width}" opacity="{opacity/100}"/>')
+            if not is_hatch:
+                # Faint second pen pass conveys the native renderer's double stroke.
+                echo=xy.copy();echo[:,0]+=.6*np.sin(xy[:,1]/13);echo[:,1]+=.6*np.cos(xy[:,0]/17)
+                points=' '.join(f'{x:.3f},{y:.3f}' for x,y in echo)
+                out.append(f'<polyline points="{points}" stroke="{color}" stroke-width=".85" opacity=".38"/>')
     out.append('</g>')
     for i in range(0,len(name),16):
         out.append(f'<text x="120" y="{238+(i//16)*18}" text-anchor="middle" font-size="13" fill="#344054" font-family="system-ui,sans-serif">{html.escape(name[i:i+16])}</text>')

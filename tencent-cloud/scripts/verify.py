@@ -72,7 +72,7 @@ def main():
         single_files=len(singles),boards=len(list((ROOT/'output/all/boards').glob('*.excalidraw'))),
         checked_gallery_links=len(parser.links),missing_links=missing,
         min_geometry_iou=report['min_geometry_iou'],
-        browser_checks=['COS/CVM alias search','category selection','464 native elements rendered in Excalidraw'],
+        browser_checks=['COS/CVM alias search','category selection',f"{len(load(ROOT/'data/qa-sample.excalidraw')['elements'])} native elements rendered in Excalidraw"],
         limitation='Full .excalidrawlib file import and full-library browser performance not tested')
     (ROOT/'data/verification.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
     print(json.dumps(out,ensure_ascii=False,indent=2))
