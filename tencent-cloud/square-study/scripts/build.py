@@ -4,6 +4,7 @@ import hashlib
 import html
 import json
 import math
+import random
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -26,59 +27,57 @@ def geometry(style,name):
         }[name]
 
 def stroke(points,style,ident):
-    # One gently wandering centerline, with no artificial echo or hatch fill.
-    result=[]
-    amount={'single':1.35,'sketch':1.05,'symbol':.2}[style]
-    for a,b in zip(points[:-1],points[1:]):
-        n=max(1,int(math.dist(a,b)/15))
-        for k in range(n):
-            x=a[0]+(b[0]-a[0])*k/n;y=a[1]+(b[1]-a[1])*k/n
-            result.append((x+amount*math.sin(y/24),y+amount*math.sin(x/27)))
-    x,y=points[-1];result.append((x+amount*math.sin(y/24),y+amount*math.sin(x/27)))
-    return result
+    # Projective vertex placement preserves straight edges without adding wobble.
+    # Apply the same map to joined paths so their endpoints stay connected.
+    return [((x+.075*y+.5)/(1+.00045*x-.00035*y),
+             (y-.045*x+.2)/(1+.00045*x-.00035*y)) for x,y in points]
 
 def element(points,style,ident,group):
     p=stroke(points,style,ident);x,y=p[0]
-    return dict(id=ident,type='line',x=x,y=y,width=max(a for a,b in p)-min(a for a,b in p),height=max(b for a,b in p)-min(b for a,b in p),angle=0,strokeColor=COLOR,backgroundColor='transparent',fillStyle='solid',strokeWidth=2,strokeStyle='solid',roughness={'single':1.5,'sketch':1.1,'symbol':.5}[style],opacity=100,groupIds=[group],frameId=None,roundness=None,seed=int(hashlib.sha256(ident.encode()).hexdigest()[:7],16),version=2,versionNonce=2,isDeleted=False,boundElements=None,updated=1790006400000,link=None,locked=False,points=[[a-x,b-y] for a,b in p],startBinding=None,endBinding=None,startArrowhead=None,endArrowhead=None,lastCommittedPoint=None)
+    return dict(id=ident,type='line',x=x,y=y,width=max(a for a,b in p)-min(a for a,b in p),height=max(b for a,b in p)-min(b for a,b in p),angle=0,strokeColor=COLOR,backgroundColor='transparent',fillStyle='solid',strokeWidth=2,strokeStyle='solid',roughness=0,opacity=100,groupIds=[group],frameId=None,roundness=None,seed=int(hashlib.sha256(ident.encode()).hexdigest()[:7],16),version=3,versionNonce=3,isDeleted=False,boundElements=None,updated=1790006400000,link=None,locked=False,points=[[a-x,b-y] for a,b in p],startBinding=None,endBinding=None,startArrowhead=None,endArrowhead=None,lastCommittedPoint=None)
 
 def label(text,ident,x,y,width=160,size=20):
-    return dict(id=ident,type='text',x=x,y=y,width=width,height=size*1.25,angle=0,strokeColor=COLOR,backgroundColor='transparent',fillStyle='solid',strokeWidth=1,strokeStyle='solid',roughness=0,opacity=100,groupIds=[],frameId=None,roundness=None,seed=1,version=2,versionNonce=2,isDeleted=False,boundElements=None,updated=1790006400000,link=None,locked=False,fontSize=size,fontFamily=5,text=text,originalText=text,textAlign='center',verticalAlign='top',containerId=None,autoResize=False,lineHeight=1.25)
+    return dict(id=ident,type='text',x=x,y=y,width=width,height=size*1.25,angle=0,strokeColor=COLOR,backgroundColor='transparent',fillStyle='solid',strokeWidth=1,strokeStyle='solid',roughness=0,opacity=100,groupIds=[],frameId=None,roundness=None,seed=1,version=3,versionNonce=3,isDeleted=False,boundElements=None,updated=1790006400000,link=None,locked=False,fontSize=size,fontFamily=5,text=text,originalText=text,textAlign='center',verticalAlign='top',containerId=None,autoResize=False,lineHeight=1.25)
 
 def dump(path,data):path.write_text(json.dumps(data,ensure_ascii=False,separators=(',',':'))+'\n')
 def scene(elements):return dict(type='excalidraw',version=2,source='https://excalidraw.com',elements=elements,appState={'viewBackgroundColor':'#ffffff','gridSize':None},files={})
 
 PALETTE={'CVM':('#fff0dc','#ef9b45'),'CLB':('#fce5ed','#e8759e'),'DNS':('#ebe8ff','#9c87e9'),'COS':('#e6f4dc','#80bd65')}
-VARIANTS=[('cross','Cross-hatch','Loose pen strokes, colored cross-hatching, and a consistent square footprint.'),('solid','Solid fill','Alternative solid background.')]
+VARIANTS=[('cross','Cross-hatch','Straight strokes. Uneven angles. Light cross-hatching.'),('solid','Solid fill','Alternative solid background.')]
 all_items={};sections=[];comparison=[]
 
+def raw_line(points,ident,group):
+    e=element(points,'single',ident,group)
+    x,y=points[0]
+    e.update(x=x,y=y,width=max(p[0] for p in points)-min(p[0] for p in points),
+             height=max(p[1] for p in points)-min(p[1] for p in points),
+             points=[[u-x,v-y] for u,v in points])
+    return e
+
+FRAME=[(1,4),(118,0),(120,120),(0,116),(1,4)]
+
+def hatch_segments(polygon):
+    rng=random.Random(42)
+    for direction in (-1,1):
+        offset=-145.0
+        while offset<265:
+            slope=direction*rng.uniform(.91,1.09)
+            hits=[]
+            for (x,y),(u,v) in zip(polygon[:-1],polygon[1:]):
+                denom=(v-y)-slope*(u-x)
+                if abs(denom)<1e-9:continue
+                t=(slope*x+offset-y)/denom
+                if 0<=t<=1:hits.append((x+t*(u-x),y+t*(v-y)))
+            if len(hits)==2 and math.dist(*hits)>3:yield hits
+            offset+=rng.uniform(10,14)
+
 def svg_for(elements,variant,name):
-    light,accent=PALETTE[name]
-    border=stroke(box(0,0,120,120),'single','border')
-    outline=' '.join(f'{x:.2f},{y:.2f}' for x,y in border)
-    clip=f'clip-{variant}-{name}'
-    out=[f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="-5 -5 130 130"><defs><clipPath id="{clip}"><polygon points="{outline}"/></clipPath></defs>']
-    out.append(f'<polygon points="{outline}" fill="{light if variant=="solid" else "#fff"}"/>')
-    if variant=='cross':
-        out.append(f'<g clip-path="url(#{clip})" fill="none" stroke="{accent}" stroke-linecap="round">')
-        for direction in (-1,1):
-            for i,offset in enumerate(range(-140,260,12)):
-                shift=1.7*math.sin(i*1.8+direction)
-                points=[]
-                for x in range(-8,130,8):
-                    y=direction*x+offset+shift+.7*math.sin(x/19+i)
-                    points.append(f'{x},{y:.2f}')
-                width=.65+.18*(1+math.sin(i*2.1))/2
-                out.append('<polyline points="'+' '.join(points)+f'" stroke-width="{width:.2f}" opacity=".78"/>')
-        out.append('</g>')
-    out.append(f'<polyline points="{outline}" fill="none" stroke="#202124" stroke-width="2" stroke-linejoin="round"/>')
-    echo=' '.join(f'{x+.65*math.sin(y/21):.2f},{y+.6*math.cos(x/23):.2f}' for x,y in border)
-    out.append(f'<polyline points="{echo}" fill="none" stroke="#202124" stroke-width=".8" opacity=".55"/>')
-    for e in elements[1:-1]:
-        p=[(x+e['x'],y+e['y']) for x,y in e['points']]
-        pts=' '.join(f'{x:.2f},{y:.2f}' for x,y in p)
-        out.append(f'<polyline points="{pts}" fill="none" stroke="#202124" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>')
-        echo=' '.join(f'{x+.5*math.sin(y/15):.2f},{y+.5*math.cos(x/18):.2f}' for x,y in p)
-        out.append(f'<polyline points="{echo}" fill="none" stroke="#202124" stroke-width=".7" opacity=".45"/>')
+    out=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="-5 -5 130 130">']
+    for e in elements:
+        if e['type']=='text':continue
+        pts=' '.join(f'{x+e["x"]:.3f},{y+e["y"]:.3f}' for x,y in e['points'])
+        fill=e['backgroundColor'] if e['backgroundColor']!='transparent' else 'none'
+        out.append(f'<polyline points="{pts}" fill="{fill}" stroke="{e["strokeColor"]}" stroke-width="{e["strokeWidth"]}" opacity="{e["opacity"]/100}" stroke-linejoin="round" stroke-linecap="round"/>')
     return ''.join(out)+'</svg>'
 
 for row,(variant,title,description) in enumerate(VARIANTS):
@@ -86,10 +85,14 @@ for row,(variant,title,description) in enumerate(VARIANTS):
     if variant=='cross':comparison.append(label('Cross-hatch',variant+'-heading',0,45,160,20))
     for col,name in enumerate(NAMES):
         group=f'square-{variant}-{name}';light,accent=PALETTE[name]
-        frame=element(box(0,0,120,120),'single',group+'-frame',group)
-        for k in ['points','startBinding','endBinding','startArrowhead','endArrowhead','lastCommittedPoint']:frame.pop(k,None)
-        frame.update(type='rectangle',x=0,y=0,width=120,height=120,roughness=1.9,backgroundColor=light if variant=='solid' else accent,fillStyle='solid' if variant=='solid' else 'cross-hatch')
+        frame=raw_line(FRAME,group+'-frame',group)
+        frame.update(backgroundColor=light if variant=='solid' else '#ffffff',strokeWidth=2)
         elems=[frame]
+        if variant=='cross':
+            for i,points in enumerate(hatch_segments(FRAME)):
+                hatch=raw_line(points,group+f'-hatch-{i}',group)
+                hatch.update(strokeColor=accent,strokeWidth=.8,opacity=60)
+                elems.append(hatch)
         for i,p in enumerate(geometry('single',name)):
             # Uniform icon scale; every resource occupies the same square footprint.
             scaled=[(60+(x-80)*.72,60+(y-78)*.72) for x,y in p]
@@ -116,7 +119,7 @@ client=copy.deepcopy(all_items['cross'][0]['elements'][0]);client.update(id='cli
 architecture.extend([client,label('Client','client-label',0,273,120,20)])
 connections=[([(60,220),(60,163)],'DNS query',True), ([(133,290),(215,290)],'HTTPS',False), ([(363,290),(445,290)],'request',False), ([(593,290),(675,290)],'objects',False)]
 for i,(points,title,dashed) in enumerate(connections):
-    e=element(points,'single',f'edge-{i}','');e.update(type='arrow',endArrowhead='arrow',groupIds=[],strokeStyle='dashed' if dashed else 'solid')
+    e=raw_line(points,f'edge-{i}','');e.update(type='arrow',endArrowhead='arrow',groupIds=[],strokeStyle='dashed' if dashed else 'solid')
     architecture.append(e)
     x,y=points[0];architecture.append(label(title,f'edge-label-{i}',x-3 if not dashed else x+12,y-30 if not dashed else y-47,90,13))
 dump(ROOT/'output'/'architecture.excalidraw',scene(architecture))
@@ -132,12 +135,14 @@ for points,title,dashed in connections:
     flow.append(f'<path d="M{x} {y}L{u} {v}" fill="none" stroke="#667085" stroke-width="1.5" {dash} marker-end="url(#a)"/>')
     flow.append(f'<text x="{x+8 if dashed else (x+u)/2}" y="{y-35 if dashed else y-13}" text-anchor="{"start" if dashed else "middle"}" font-family="system-ui" font-size="13" fill="#667085">{title}</text>')
 flow.append('</svg>');(ROOT/'assets'/'architecture.svg').write_text(''.join(flow))
-page='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hand-drawn Infrastructure Icons</title><style>*{box-sizing:border-box}body{margin:0;background:#faf9f6;color:#25282d;font:14px/1.6 system-ui}main{max-width:1160px;margin:auto;padding:30px}h1{font-size:28px;margin:8px 0}p{color:#737982}header{margin-bottom:25px}section{display:grid;grid-template-columns:200px 1fr;gap:24px;border-top:1px solid #e1e1dd;padding:24px 0}h2{font-size:19px;margin:0}a{color:#416883;font-size:13px}.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}.tile{display:flex;align-items:center;flex-direction:column;text-decoration:none;color:inherit}.tile img{width:100%;max-width:128px;aspect-ratio:1}.tile strong{font-size:17px;margin-top:8px}.tile span{font-size:12px;color:#899099}.flow{border-top:1px solid #e1e1dd;padding-top:22px}.flow img{width:100%;max-width:850px;margin-top:20px}footer{color:#899099;font-size:12px;margin-top:22px}@media(max-width:800px){main{padding:22px}section{grid-template-columns:1fr}.tiles{gap:15px}} </style><main><header><small>ARCHITECTURE ICONS / CROSS-HATCH</small><h1>Square icons. Sketchbook strokes.</h1><p>Four infrastructure icons with colored cross-hatching, loose black outlines, and simple symbols. Matching 120 × 120 tiles with labels outside.</p><a href="comparison.excalidraw">Download editable icon sheet ↗</a></header>'''+''.join(sections)+'''<div class="flow"><h2>In an architecture diagram</h2><p>The client resolves DNS, sends requests through CLB to CVM, and CVM accesses COS.</p><img src="../assets/architecture.svg" alt="DNS, CLB, CVM and COS architecture"><br><a href="architecture.excalidraw">Download editable diagram ↗</a></div><footer>Original infrastructure symbols inspired by your reference. All elements are editable. Preview strokes approximate the native Excalidraw rendering.</footer></main></html>'''
+page='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hand-drawn Infrastructure Icons</title><style>*{box-sizing:border-box}body{margin:0;background:#faf9f6;color:#25282d;font:14px/1.6 system-ui}main{max-width:1160px;margin:auto;padding:30px}h1{font-size:28px;margin:8px 0}p{color:#737982}header{margin-bottom:25px}section{display:grid;grid-template-columns:200px 1fr;gap:24px;border-top:1px solid #e1e1dd;padding:24px 0}h2{font-size:19px;margin:0}a{color:#416883;font-size:13px}.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}.tile{display:flex;align-items:center;flex-direction:column;text-decoration:none;color:inherit}.tile img{width:100%;max-width:128px;aspect-ratio:1}.tile strong{font-size:17px;margin-top:8px}.tile span{font-size:12px;color:#899099}.flow{border-top:1px solid #e1e1dd;padding-top:22px}.flow img{width:100%;max-width:850px;margin-top:20px}footer{color:#899099;font-size:12px;margin-top:22px}@media(max-width:800px){main{padding:22px}section{grid-template-columns:1fr}.tiles{gap:15px}} </style><main><header><small>ARCHITECTURE ICONS / CROSS-HATCH</small><h1>Straight lines. Human angles.</h1><p>Four square infrastructure tiles with subtly skewed corners and simple symbols. Straight edges stay straight; circles keep their natural curves.</p><a href="comparison.excalidraw">Download editable icon sheet ↗</a></header>'''+''.join(sections)+'''<div class="flow"><h2>In an architecture diagram</h2><p>The client resolves DNS, sends requests through CLB to CVM, and CVM accesses COS.</p><img src="../assets/architecture.svg" alt="DNS, CLB, CVM and COS architecture"><br><a href="architecture.excalidraw">Download editable diagram ↗</a></div><footer>Original infrastructure symbols inspired by your reference. All elements are editable. Preview and native files share the same straight-line geometry.</footer></main></html>'''
 (ROOT/'output'/'index.html').write_text(page)
 for variant,items in all_items.items():
     assert len(items)==4
     for item in items:
-        f=item['elements'][0];assert f['type']=='rectangle' and f['width']==f['height']==120
+        f=item['elements'][0];assert f['type']=='line' and len(f['points'])==5 and f['width']==f['height']==120
+        assert all(e['roughness']==0 for e in item['elements'])
+        assert all(len(e['points'])==2 for e in item['elements'] if '-hatch-' in e['id'])
         assert len({e['id'] for e in item['elements']})==len(item['elements'])
         for e in item['elements']:assert all(math.isfinite(e[k]) for k in ('x','y','width','height'))
 import re
