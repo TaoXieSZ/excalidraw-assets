@@ -97,13 +97,13 @@ def sketch_points(points, hatch=False):
         sampled.extend(first+(last-first)*i/count for i in range(count))
     sampled.append(a[-1]);xy=np.asarray(sampled)
     x,y=xy[:,0].copy(),xy[:,1].copy()
-    xy[:,0]+=.95*np.sin(y/21+x/53)+.32*np.sin(y/7)
-    xy[:,1]+=.9*np.sin(x/25-y/61)+.3*np.sin(x/8)
+    xy[:,0]+=1.65*np.sin(y/21+x/53)+.5*np.sin(y/7)
+    xy[:,1]+=1.55*np.sin(x/25-y/61)+.45*np.sin(x/8)
     if hatch:
         phase=float(a[0].sum())
         t=np.linspace(0,1,len(xy))
-        xy[:,0]+=.8*np.sin(phase)*np.sin(t*math.pi)
-        xy[:,1]+=.6*np.cos(phase)*np.sin(t*math.pi)
+        xy[:,0]+=1.25*np.sin(phase)*np.sin(t*math.pi)
+        xy[:,1]+=1.0*np.cos(phase)*np.sin(t*math.pi)
     return xy
 
 def pen_style(points,hatch):
@@ -118,9 +118,9 @@ def native_line(points, ident, group, color, hatch=False):
     return dict(id=ident,type='line',x=round(float(first[0]),3),y=round(float(first[1]),3),
         width=round(float(hi[0]-lo[0]),3),height=round(float(hi[1]-lo[1]),3),angle=0,
         strokeColor=color,backgroundColor='transparent',fillStyle='hachure',
-        strokeWidth=width,strokeStyle='solid',roughness=1.15 if hatch else 1.4,
+        strokeWidth=width,strokeStyle='solid',roughness=1.5 if hatch else 1.9,
         opacity=opacity,groupIds=[group],frameId=None,roundness=None,
-        seed=int(hashlib.sha256(ident.encode()).hexdigest()[:7],16),version=2,versionNonce=2,
+        seed=int(hashlib.sha256(ident.encode()).hexdigest()[:7],16),version=3,versionNonce=3,
         isDeleted=False,boundElements=None,updated=STAMP,link=None,locked=False,
         points=np.round(xy-first,3).tolist(),startBinding=None,endBinding=None,
         startArrowhead=None,endArrowhead=None,lastCommittedPoint=None)
@@ -160,9 +160,9 @@ def preview_svg(contours, hatch_segments, name):
             out.append(f'<polyline points="{points}" stroke="{color}" stroke-width="{width}" opacity="{opacity/100}"/>')
             if not is_hatch:
                 # Faint second pen pass conveys the native renderer's double stroke.
-                echo=xy.copy();echo[:,0]+=.6*np.sin(xy[:,1]/13);echo[:,1]+=.6*np.cos(xy[:,0]/17)
+                echo=xy.copy();echo[:,0]+=1.0*np.sin(xy[:,1]/13);echo[:,1]+=1.0*np.cos(xy[:,0]/17)
                 points=' '.join(f'{x:.3f},{y:.3f}' for x,y in echo)
-                out.append(f'<polyline points="{points}" stroke="{color}" stroke-width=".85" opacity=".38"/>')
+                out.append(f'<polyline points="{points}" stroke="{color}" stroke-width=".85" opacity=".45"/>')
     out.append('</g>')
     for i in range(0,len(name),16):
         out.append(f'<text x="120" y="{238+(i//16)*18}" text-anchor="middle" font-size="13" fill="#344054" font-family="system-ui,sans-serif">{html.escape(name[i:i+16])}</text>')
