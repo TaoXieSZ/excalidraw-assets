@@ -43,7 +43,7 @@ def dump(path,data):path.write_text(json.dumps(data,ensure_ascii=False,separator
 def scene(elements):return dict(type='excalidraw',version=2,source='https://excalidraw.com',elements=elements,appState={'viewBackgroundColor':'#ffffff','gridSize':None},files={})
 
 PALETTE={'CVM':('#fff0dc','#ef9b45'),'CLB':('#fce5ed','#e8759e'),'DNS':('#ebe8ff','#9c87e9'),'COS':('#e6f4dc','#80bd65')}
-VARIANTS=[('cross','Cross-hatch','Straight strokes. Uneven angles. Light cross-hatching.'),('solid','Solid fill','Alternative solid background.')]
+VARIANTS=[('cross','Cross-hatch','Perfect square frames. Irregular inner geometry. Light cross-hatching.'),('solid','Solid fill','Alternative solid background.')]
 all_items={};sections=[];comparison=[]
 
 def raw_line(points,ident,group):
@@ -54,7 +54,7 @@ def raw_line(points,ident,group):
              points=[[u-x,v-y] for u,v in points])
     return e
 
-FRAME=[(1,4),(118,0),(120,120),(0,116),(1,4)]
+FRAME=[(0,0),(120,0),(120,120),(0,120),(0,0)]
 
 def hatch_segments(polygon):
     rng=random.Random(42)
@@ -135,12 +135,13 @@ for points,title,dashed in connections:
     flow.append(f'<path d="M{x} {y}L{u} {v}" fill="none" stroke="#667085" stroke-width="1.5" {dash} marker-end="url(#a)"/>')
     flow.append(f'<text x="{x+8 if dashed else (x+u)/2}" y="{y-35 if dashed else y-13}" text-anchor="{"start" if dashed else "middle"}" font-family="system-ui" font-size="13" fill="#667085">{title}</text>')
 flow.append('</svg>');(ROOT/'assets'/'architecture.svg').write_text(''.join(flow))
-page='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hand-drawn Infrastructure Icons</title><style>*{box-sizing:border-box}body{margin:0;background:#faf9f6;color:#25282d;font:14px/1.6 system-ui}main{max-width:1160px;margin:auto;padding:30px}h1{font-size:28px;margin:8px 0}p{color:#737982}header{margin-bottom:25px}section{display:grid;grid-template-columns:200px 1fr;gap:24px;border-top:1px solid #e1e1dd;padding:24px 0}h2{font-size:19px;margin:0}a{color:#416883;font-size:13px}.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}.tile{display:flex;align-items:center;flex-direction:column;text-decoration:none;color:inherit}.tile img{width:100%;max-width:128px;aspect-ratio:1}.tile strong{font-size:17px;margin-top:8px}.tile span{font-size:12px;color:#899099}.flow{border-top:1px solid #e1e1dd;padding-top:22px}.flow img{width:100%;max-width:850px;margin-top:20px}footer{color:#899099;font-size:12px;margin-top:22px}@media(max-width:800px){main{padding:22px}section{grid-template-columns:1fr}.tiles{gap:15px}} </style><main><header><small>ARCHITECTURE ICONS / CROSS-HATCH</small><h1>Straight lines. Human angles.</h1><p>Four square infrastructure tiles with subtly skewed corners and simple symbols. Straight edges stay straight; circles keep their natural curves.</p><a href="comparison.excalidraw">Download editable icon sheet ↗</a></header>'''+''.join(sections)+'''<div class="flow"><h2>In an architecture diagram</h2><p>The client resolves DNS, sends requests through CLB to CVM, and CVM accesses COS.</p><img src="../assets/architecture.svg" alt="DNS, CLB, CVM and COS architecture"><br><a href="architecture.excalidraw">Download editable diagram ↗</a></div><footer>Original infrastructure symbols inspired by your reference. All elements are editable. Preview and native files share the same straight-line geometry.</footer></main></html>'''
+page='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hand-drawn Infrastructure Icons</title><style>*{box-sizing:border-box}body{margin:0;background:#faf9f6;color:#25282d;font:14px/1.6 system-ui}main{max-width:1160px;margin:auto;padding:30px}h1{font-size:28px;margin:8px 0}p{color:#737982}header{margin-bottom:25px}section{display:grid;grid-template-columns:200px 1fr;gap:24px;border-top:1px solid #e1e1dd;padding:24px 0}h2{font-size:19px;margin:0}a{color:#416883;font-size:13px}.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}.tile{display:flex;align-items:center;flex-direction:column;text-decoration:none;color:inherit}.tile img{width:100%;max-width:128px;aspect-ratio:1}.tile strong{font-size:17px;margin-top:8px}.tile span{font-size:12px;color:#899099}.flow{border-top:1px solid #e1e1dd;padding-top:22px}.flow img{width:100%;max-width:850px;margin-top:20px}footer{color:#899099;font-size:12px;margin-top:22px}@media(max-width:800px){main{padding:22px}section{grid-template-columns:1fr}.tiles{gap:15px}} </style><main><header><small>ARCHITECTURE ICONS / CROSS-HATCH</small><h1>Straight lines. Human angles.</h1><p>Four infrastructure tiles with exact square frames and subtly irregular inner symbols. Straight edges stay straight; circles keep their natural curves.</p><a href="comparison.excalidraw">Download editable icon sheet ↗</a></header>'''+''.join(sections)+'''<div class="flow"><h2>In an architecture diagram</h2><p>The client resolves DNS, sends requests through CLB to CVM, and CVM accesses COS.</p><img src="../assets/architecture.svg" alt="DNS, CLB, CVM and COS architecture"><br><a href="architecture.excalidraw">Download editable diagram ↗</a></div><footer>Original infrastructure symbols inspired by your reference. All elements are editable. Preview and native files share the same straight-line geometry.</footer></main></html>'''
 (ROOT/'output'/'index.html').write_text(page)
 for variant,items in all_items.items():
     assert len(items)==4
     for item in items:
         f=item['elements'][0];assert f['type']=='line' and len(f['points'])==5 and f['width']==f['height']==120
+        assert f['points']==[[0,0],[120,0],[120,120],[0,120],[0,0]]
         assert all(e['roughness']==0 for e in item['elements'])
         assert all(len(e['points'])==2 for e in item['elements'] if '-hatch-' in e['id'])
         assert len({e['id'] for e in item['elements']})==len(item['elements'])
