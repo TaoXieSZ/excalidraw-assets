@@ -1,20 +1,22 @@
-# 方形基础架构图标小样
+# Hand-drawn square infrastructure icons
 
-参考用户提供的 AWS 图库截图：统一方形外框、分类底色、居中的黑色手绘符号。仅试画 CVM、CLB、DNS、COS，等待满意后再扩展。
+Four resources only: CVM, CLB, DNS and COS. Cross-hatching is the selected direction; expansion awaits visual approval.
 
-[对比页面](./output/index.html) · [色块底素材库](./output/solid.excalidrawlib) · [交叉排线素材库](./output/cross.excalidrawlib) · [架构图示例](./output/architecture.excalidraw)
+[Preview](./output/index.html) · [Cross-hatch library](./output/cross.excalidrawlib) · [Editable icon sheet](./output/comparison.excalidraw) · [Architecture example](./output/architecture.excalidraw)
 
-- 四种资源的图标区域均为 120 × 120，标签位于框外。
-- 色块版延续大色块偏好，排线版更接近参考截图。
-- 原生 rectangle 外框、line 符号和 text 标签，支持拆组、改色及编辑。
-- 颜色仅用于这组小样的视觉分类，不代表腾讯云官方规范。
+- Consistent 120 × 120 square frames, with English labels outside.
+- Colored native cross-hatching, loose black outlines and simple symbols.
+- Frame roughness 1.9; symbol roughness 1.5 with gentle, repeatable pen drift.
+- Editable rectangle, line and text elements. No embedded images.
+- Category colors are visual choices for this study, not official Tencent Cloud specifications.
+- The alternate solid-fill files are retained, but the preview and architecture use cross-hatching.
 
-![两种底纹的实际渲染](./assets/native-comparison.png)
+![Native icon rendering](./assets/native-comparison.png)
 
-![在架构图中的实际渲染](./assets/native-architecture.png)
+![Native architecture rendering](./assets/native-architecture.png)
 
-## 重建与验证
+## Rebuild and validation
 
-运行 `python3 tencent-cloud/square-study/scripts/build.py`。仅依赖 Python 标准库；产出位于 assets 和 output 子目录，不改已有全量图库。
+Run `python3 tencent-cloud/square-study/scripts/build.py`. The script uses only Python's standard library and does not change earlier studies or the full catalog.
 
-已检查两套共 8 个图标的正方形尺寸、ID、坐标和 21 个预览/下载链接；两种底纹和架构图均已在 Excalidraw 中实际渲染。网页排线为近似预览，实际素材使用 Excalidraw 原生 cross-hatch 填充。
+Checks cover square dimensions, unique item element IDs, finite geometry, English-only HTML and exported Excalidraw files, and all 12 preview/download links. The four cross-hatched icons and architecture example were rendered in Excalidraw. SVG previews approximate native pen strokes and cross-hatching.
