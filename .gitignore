@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__/
+*.pyc
+# Rebuilt from the official ZIP bundled in tencent-cloud/data/.
+tencent-cloud/data/rendered/
+tencent-cloud/data/official-svg/
