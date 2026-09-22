@@ -2,6 +2,18 @@
 
 可拆组、改色的 Excalidraw 手绘素材库。
 
+## 已选画风 · 铅笔手绘基础设施
+
+CVM、CLB、DNS、COS 四个小样采用已确认的铅笔画风：正方形边框、四色排线、白色主体与黑色复描轮廓。可编辑版保留轮廓和配色，简化了原图的纸张颗粒。
+
+![已确认的画风参考](./tencent-cloud/pencil-icons/assets/approved-reference.png)
+
+- **[下载四款可编辑素材库](./tencent-cloud/pencil-icons/output/pencil.excalidrawlib)**
+- [使用说明与实际 Excalidraw 渲染](./tencent-cloud/pencil-icons/README.md)
+- [可编辑对比画布](./tencent-cloud/pencil-icons/output/icon-sheet.excalidraw)
+
+下方全量图库仍是早期版本，尚未套用这套新画风。
+
 ## 腾讯云 · 455 款
 
 根据官方资源包绘制，覆盖 896 个中英文源文件；包含蓝色、黑白两套，共 910 个素材项，按 13 类整理。
