@@ -8,6 +8,7 @@ CVM、CLB、DNS、COS 四个小样采用已确认的铅笔画风：正方形边�
 
 ![已确认的画风参考](./tencent-cloud/pencil-icons/assets/approved-reference.png)
 
+- **[一键添加到 Excalidraw](https://excalidraw.com/?addLibrary=https%3A%2F%2Fraw.githubusercontent.com%2FTaoXieSZ%2Fexcalidraw-libraries%2F7c5d88a1cc3944719a8cf91a6dab37af42a2d8cf%2Flibraries%2Ftaoxiesz%2Ftencent-cloud-pencil.excalidrawlib)** · [官方图库收录申请](https://github.com/excalidraw/excalidraw-libraries/pull/2882)（待审核）
 - **[下载四款可编辑素材库](./tencent-cloud/pencil-icons/output/pencil.excalidrawlib)**
 - [使用说明与实际 Excalidraw 渲染](./tencent-cloud/pencil-icons/README.md)
 - [可编辑对比画布](./tencent-cloud/pencil-icons/output/icon-sheet.excalidraw)
