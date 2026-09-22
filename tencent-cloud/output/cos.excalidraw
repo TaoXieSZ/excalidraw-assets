@@ -1,0 +1,282 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "id": "tencent-0003",
+      "type": "line",
+      "x": 181,
+      "y": 48,
+      "width": 162,
+      "height": 188,
+      "angle": 0,
+      "strokeColor": "#0052d9",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 3.2,
+      "strokeStyle": "solid",
+      "roughness": 1.2,
+      "opacity": 100,
+      "groupIds": [
+        "tencent-cos-blue"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 211205965,
+      "version": 1,
+      "versionNonce": 3,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1790006400000,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -81,
+          -46
+        ],
+        [
+          -162,
+          0
+        ],
+        [
+          -162,
+          96
+        ],
+        [
+          -81,
+          142
+        ],
+        [
+          0,
+          96
+        ],
+        [
+          0,
+          27
+        ]
+      ],
+      "startBinding": null,
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "lastCommittedPoint": null
+    },
+    {
+      "id": "tencent-0004",
+      "type": "line",
+      "x": 100,
+      "y": 50,
+      "width": 80,
+      "height": 46,
+      "angle": 0,
+      "strokeColor": "#0052d9",
+      "backgroundColor": "#d0ebff",
+      "fillStyle": "hachure",
+      "strokeWidth": 2.4,
+      "strokeStyle": "solid",
+      "roughness": 1.2,
+      "opacity": 100,
+      "groupIds": [
+        "tencent-cos-blue"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 114871533,
+      "version": 1,
+      "versionNonce": 4,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1790006400000,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -40,
+          23
+        ],
+        [
+          0,
+          46
+        ],
+        [
+          40,
+          23
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "startBinding": null,
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "lastCommittedPoint": null
+    },
+    {
+      "id": "tencent-0005",
+      "type": "line",
+      "x": 60,
+      "y": 73,
+      "width": 40,
+      "height": 70,
+      "angle": 0,
+      "strokeColor": "#0052d9",
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "hachure",
+      "strokeWidth": 2.4,
+      "strokeStyle": "solid",
+      "roughness": 1.2,
+      "opacity": 100,
+      "groupIds": [
+        "tencent-cos-blue"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 72632263,
+      "version": 1,
+      "versionNonce": 5,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1790006400000,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          47
+        ],
+        [
+          40,
+          70
+        ],
+        [
+          40,
+          23
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "startBinding": null,
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "lastCommittedPoint": null
+    },
+    {
+      "id": "tencent-0006",
+      "type": "line",
+      "x": 100,
+      "y": 96,
+      "width": 40,
+      "height": 70,
+      "angle": 0,
+      "strokeColor": "#0052d9",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 2.4,
+      "strokeStyle": "solid",
+      "roughness": 1.2,
+      "opacity": 100,
+      "groupIds": [
+        "tencent-cos-blue"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 162773613,
+      "version": 1,
+      "versionNonce": 6,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1790006400000,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          47
+        ],
+        [
+          40,
+          24
+        ],
+        [
+          40,
+          -23
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "startBinding": null,
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "lastCommittedPoint": null
+    },
+    {
+      "id": "tencent-0007",
+      "type": "text",
+      "x": 0,
+      "y": 211,
+      "width": 200,
+      "height": 35.0,
+      "angle": 0,
+      "strokeColor": "#0052d9",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "groupIds": [
+        "tencent-cos-blue"
+      ],
+      "frameId": null,
+      "roundness": null,
+      "seed": 21871606,
+      "version": 1,
+      "versionNonce": 7,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1790006400000,
+      "link": null,
+      "locked": false,
+      "fontSize": 28,
+      "fontFamily": 5,
+      "text": "COS",
+      "originalText": "COS",
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "containerId": null,
+      "autoResize": false,
+      "lineHeight": 1.25
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff",
+    "gridSize": null
+  },
+  "files": {}
+}

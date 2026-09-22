@@ -1,0 +1,22 @@
+{
+  "skill": "handdraw-tech-icons",
+  "structure": "passed",
+  "portable_archive": "passed",
+  "relative_references": "passed",
+  "compiler": "passed",
+  "installer": [
+    "shared location",
+    "four agent entries",
+    "idempotent reinstall",
+    "preserves differing installed files"
+  ],
+  "forward_test": {
+    "agent": "independent executor",
+    "scenario": "task dispatch, retry and status recording",
+    "result": "valid brief and compiled prompt, correctly reported no image tool",
+    "image_generation_tested": false
+  },
+  "agent_discovery_in_live_apps": "not verified",
+  "weaker_model_equivalence": "not tested",
+  "archive_sha256": "51cdc2f5e955852f3b4ac9f9bbba9c16ffedd48a0d7478933bef702055703a04"
+}

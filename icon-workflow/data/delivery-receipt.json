@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "deliver",
+  "type": "workflow",
+  "input": "/Users/txie/Documents/ChatGPT/excalidraw-assets 2/icon-workflow/data/workflow.json",
+  "output": "/Users/txie/Documents/ChatGPT/excalidraw-assets 2/icon-workflow/output/workflow.html",
+  "specification": {
+    "sha256": "52f43e8272ad3589d5ce2e0aa8a7b974da3f26d03a9a29b6b86eb90e6c9de000",
+    "bytes": 4827
+  },
+  "artifact": {
+    "sha256": "8b5a1757d75523f5f32d8086a7fedcb0374a696c01a2d80575f628a3cbbff23b",
+    "bytes": 715132
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  }
+}
