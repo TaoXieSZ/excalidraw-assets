@@ -1,0 +1,218 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "手绘技术图标：从组件定义到可复用流程",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    {
+      "id": "prepare",
+      "label": "文本模型：压缩与组装"
+    },
+    {
+      "id": "render",
+      "label": "绘图工具：生成与复核"
+    },
+    {
+      "id": "delivery",
+      "label": "交付：预览与可选重绘"
+    }
+  ],
+  "mainPath": [
+    "definition",
+    "semantics",
+    "shapes",
+    "prompt",
+    "imagegen",
+    "review",
+    "png"
+  ],
+  "nodes": [
+    {
+      "id": "definition",
+      "lane": "prepare",
+      "col": 0,
+      "type": "external",
+      "label": "读取组件定义",
+      "sublabel": "职责、方向、隔离约束",
+      "width": 144
+    },
+    {
+      "id": "semantics",
+      "lane": "prepare",
+      "col": 1,
+      "type": "backend",
+      "label": "提取三个语义",
+      "sublabel": "变更 / 审批 / 异步回执",
+      "width": 144
+    },
+    {
+      "id": "shapes",
+      "lane": "prepare",
+      "col": 2,
+      "type": "backend",
+      "label": "映射简单图形",
+      "sublabel": "事件块 / 闸 / 虚线箭头",
+      "width": 144
+    },
+    {
+      "id": "prompt",
+      "lane": "prepare",
+      "col": 3,
+      "type": "backend",
+      "label": "组装固定提示词",
+      "sublabel": "图形清单 + 风格 + 禁用项",
+      "width": 144
+    },
+    {
+      "id": "reference",
+      "lane": "render",
+      "col": 2,
+      "type": "database",
+      "label": "已认可的参考图",
+      "sublabel": "四款基础设施小样",
+      "tag": "只参考笔触",
+      "width": 144
+    },
+    {
+      "id": "imagegen",
+      "lane": "render",
+      "col": 3,
+      "type": "cloud",
+      "label": "图像生成工具",
+      "sublabel": "文字规格 + 参考图片",
+      "tag": "实际绘制像素",
+      "width": 144
+    },
+    {
+      "id": "review",
+      "lane": "render",
+      "col": 4,
+      "type": "security",
+      "label": "检查技术辨识度",
+      "sublabel": "方向、简洁度、参考一致性",
+      "width": 144
+    },
+    {
+      "id": "png",
+      "lane": "render",
+      "col": 5,
+      "type": "database",
+      "label": "保存图与提示词",
+      "sublabel": "v2 已生成，待用户评价",
+      "width": 144
+    },
+    {
+      "id": "repair",
+      "lane": "delivery",
+      "col": 4,
+      "type": "backend",
+      "label": "只修改失败项",
+      "sublabel": "不重写已确认的风格",
+      "tag": "复用时的纠偏规则",
+      "width": 144
+    },
+    {
+      "id": "native",
+      "lane": "delivery",
+      "col": 5,
+      "type": "backend",
+      "label": "可选原生重绘",
+      "sublabel": "重绘 → 导入 → 核对",
+      "tag": "本组件尚未执行",
+      "width": 144
+    }
+  ],
+  "edges": [
+    {
+      "id": "read-extract",
+      "from": "definition",
+      "to": "semantics",
+      "role": "main"
+    },
+    {
+      "id": "extract-map",
+      "from": "semantics",
+      "to": "shapes",
+      "role": "main"
+    },
+    {
+      "id": "map-assemble",
+      "from": "shapes",
+      "to": "prompt",
+      "role": "main"
+    },
+    {
+      "id": "prompt-render",
+      "from": "prompt",
+      "to": "imagegen",
+      "label": "调用绘图工具",
+      "role": "main"
+    },
+    {
+      "id": "reference-render",
+      "from": "reference",
+      "to": "imagegen",
+      "label": "附图",
+      "role": "branch",
+      "variant": "dashed"
+    },
+    {
+      "id": "render-review",
+      "from": "imagegen",
+      "to": "review",
+      "role": "main"
+    },
+    {
+      "id": "review-save",
+      "from": "review",
+      "to": "png",
+      "label": "保留小样",
+      "role": "main"
+    },
+    {
+      "id": "review-repair",
+      "from": "review",
+      "to": "repair",
+      "label": "不符合规格",
+      "role": "branch",
+      "variant": "security"
+    },
+    {
+      "id": "save-native",
+      "from": "png",
+      "to": "native",
+      "label": "需要可编辑时",
+      "role": "branch",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "这次实际走过的弯路",
+      "items": [
+        "v1 照文档比喻画成故事，被用户否定。",
+        "v2 去掉人物与河流，改成技术符号。"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "给普通文本模型的固定规则",
+      "items": [
+        "最多三个关键语义；固定图形词表。",
+        "沿用已认可参考图，不重新探索画风。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "能力边界",
+      "items": [
+        "文本模型准备规格，图像工具负责绘制。",
+        "较弱模型尚未对照实测，不保证同等效果。"
+      ]
+    }
+  ]
+}

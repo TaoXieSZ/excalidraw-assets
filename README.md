@@ -2,6 +2,12 @@
 
 可拆组、改色的 Excalidraw 手绘素材库。
 
+## 给各 Agent 复用的 Skill
+
+**[handdraw-tech-icons](./skills/handdraw-tech-icons/SKILL.md)**：从软件组件定义生成简洁手绘技术 icon，包含固定参考图、图形词表和提示词编译器。
+
+[安装说明](./skills/README.md) · [完整 Skill ZIP](./skills/output/handdraw-tech-icons.zip) · [交互流程图](./icon-workflow/output/workflow.html) · [流程复盘与示例](./icon-workflow/README.md)
+
 ## 已选画风 · 铅笔手绘基础设施
 
 CVM、CLB、DNS、COS 四个小样采用已确认的铅笔画风：正方形边框、四色排线、白色主体与黑色复描轮廓。可编辑版保留轮廓和配色，简化了原图的纸张颗粒。
