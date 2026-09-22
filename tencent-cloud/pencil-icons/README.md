@@ -2,13 +2,13 @@
 
 Four editable architecture symbols: **CVM, CLB, DNS, COS**. The raster sketch below was approved as the visual direction on 2026-09-22. The native files are a vector adaptation for review, not a pixel-identical conversion.
 
-[Install in Excalidraw](https://excalidraw.com/?addLibrary=https%3A%2F%2Fraw.githubusercontent.com%2FTaoXieSZ%2Fexcalidraw-libraries%2F7c5d88a1cc3944719a8cf91a6dab37af42a2d8cf%2Flibraries%2Ftaoxiesz%2Ftencent-cloud-pencil.excalidrawlib) · [Download library](./output/pencil.excalidrawlib) · [Editable sheet](./output/icon-sheet.excalidraw) · [Preview page](./output/index.html)
+[Install in Excalidraw](https://excalidraw.com/#addLibrary=https%3A%2F%2Fraw.githubusercontent.com%2Fexcalidraw%2Fexcalidraw-libraries%2F7c5d88a1cc3944719a8cf91a6dab37af42a2d8cf%2Flibraries%2Ftaoxiesz%2Ftencent-cloud-pencil.excalidrawlib) · [Download library](./output/pencil.excalidrawlib) · [Editable sheet](./output/icon-sheet.excalidraw) · [Preview page](./output/index.html)
 
 Import the `.excalidrawlib` through Excalidraw's library menu. Each icon is grouped for placement; ungroup to edit its hatching, outlines and label. Individual `.excalidraw` files are also available in `output/`.
 
 ## Public library submission
 
-[Upstream review #2882](https://github.com/excalidraw/excalidraw-libraries/pull/2882) is pending. The installation link above works before catalog approval and is pinned to the submitted revision. The published package has English expanded item names, native grouping and a preview rendered in Excalidraw. The upstream validation script passes locally; upstream preview deployment requires maintainer authorization.
+[Upstream review #2882](https://github.com/excalidraw/excalidraw-libraries/pull/2882) is pending. The installation link above works before catalog approval and is pinned to the submitted revision. It uses the official repository URL exposed by the pull request: Excalidraw blocks URL imports from personal forks. The corrected link was tested through the import confirmation and the four rendered items in the library sidebar. The published package has English expanded item names, native grouping and a preview rendered in Excalidraw. The upstream validation script passes locally; upstream preview deployment requires maintainer authorization.
 
 ## Approved visual reference
 
